@@ -11,25 +11,24 @@ const { getFirestore } = require("firebase-admin/firestore");
 const BOT_TOKEN = "8674899639:AAEzgSXjgJelVVY0gXWjuh8RUWkZgghAVz4";
 const ADMIN_PASSWORD = "2808";
 const PORT = process.env.PORT || 3000;
-const WEBAPP_URL = process.env.WEBAPP_URL || "https://received10dollar-production.up.railway.app/";
+const WEBAPP_URL = process.env.WEBAPP_URL || "https://your-app.up.railway.app";
 
 // ⚠️ Firebase Service Account — paste your JSON here
 // Firebase Console → Project Settings → Service Accounts → Generate new private key
 const FIREBASE_SERVICE_ACCOUNT = process.env.FIREBASE_SA
   ? JSON.parse(process.env.FIREBASE_SA)
   : {
-  "type": "service_account",
-  "project_id": "received10dallarbot",
-  "private_key_id": "847e6fd1517b12f463354155e77d8d8bda420cbc",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC7i/KjSoqFadsq\nAsCUg/uPghaKOBZYXfhbAH2AFU9kSd6MldToTPzapPBSSolJU/mEKP7ukeFXcHxS\nv4E3XF1aEoPNlUPexIilik6lVivZ2ZlP7VEbQ6ojQP/58yi7FkB3KmceRCJruHng\nkpYjnyDVXmZ4nLudjLFrKo535w3pqs5lBZ4ifWXuiARxhjjhao5l5jWkWkOPxVV+\nQYsj6KVZZVgiROEJCzDFqk2LTgBaNxya1YOHZEv/PFLg0jJJ5t+QLJvsEqxtBDnS\nBmUVM6L9i2Y8S1KsQ+lI6rNgYQUB8CZqJkGcF+YqsSpDg0TxfNZJSU/WEFdiTQe6\n4hAowsBLAgMBAAECggEAWdn0hzLhJoXOkFP9O6n3zYs/jTzNx8xNfhvABKsw/BU/\n4A6wkBLCWWYIFQTMvSrUMfMKH/YYBbJIfcRt/b3so4iXSNkoSQPTi6u1fhTIsXhE\nsTw7TVqfmoA7ot5SNz+z5uOTv7ZY307kZSkVcT99lXvCkCpW4GZVYchjtSInUjjG\n8Gh8nWw0n27Gl9p+CfefnxqgSRmCTUGyc5dgc6EhFdQh9sLLDQ4tXX7mqTJg95XC\nuzThq41KseqFfz8NjxJiO11vwWZ03MuX5UdI4988Iw984n3ubgNzv8+phUEiKLAj\nDi7wLgS9ccuZ6xnoORws7aQPvgVv3GbDbGGmvGKVIQKBgQDbyYq4X5ph84NZgFXE\nLX27Qw9wjH5t0jgLG4Fvyjtynwzt8gvZveuhvLomlDMifdQRYeNPN1pHlRivSfh1\nGEHDPa5+1mFiJ7QPlmn+mAe7JHBO7G2JjpHT34p+5u1GC5aeQ4FUHRus1mV8IYsj\nXJgp/+8TP0JXPrrtPC50E8SIgwKBgQDacoWq/g6vST8o8H7cFYHv7YvgvEPo3K56\nK55eJqPIh8jRrh8FTiV1Vo5gItCe3j1r6ekMkcvnGftEq2BUHLD0fKHMzLfPiSly\ncsy7dEAsxj3wZ3jOezt0LSCIUP1dEv+RyR/98RewXUWqU9Y39meNAvsPIAhpkEQ9\ndq+rr/IOmQKBgG5r/VPQRGH90/n9bhmXuVmBwZoMG+DVAu8hrJAbjG5z1i0dtDJ7\nJo0lomiLgH1NtmPdSDSeXK8mCzbV9QvvWerbbHWxA1ArHl3OdgZBH3E4R2x/gDDh\n/gXyg0RqhL7yR4PP6oP189eMB4Sr3ZmwhYpkWRrUZ2Ip1AQofjY3UEA9AoGBANF2\nCJfKXlhTmr1txabQ9LQUChEnVNKfcKny0zsiP+AT20q7dEFJCn/1zDWAjJwZK7oj\nI3ULBAKIFjhlP8vHayIzs43GKuZUdiqoy4lfUf3c5R10ihErdvnSH6S2TAuIIQkw\nWn3MRNO2zAsjsoAcxHQhDI0XQRm/3L825AFzh13ZAoGBAIg8kj+YazIhNTP6kpJx\nROS1k4zxv52kqvYFgrU5Daar8ivdpTushZBV/sUy7rYtl1xMdBdATpBM8jYnCQWP\nqtVsh1tU4PIPGma0xu2SkT4+ee4P7pv0QNRBm7UkU8WY7zAjk3mE9o6eITtTGnHd\nBSCa8jgvDzMP4qkPVEEBUnt9\n-----END PRIVATE KEY-----\n",
-  "client_email": "firebase-adminsdk-fbsvc@received10dallarbot.iam.gserviceaccount.com",
-  "client_id": "101534355015628418394",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40received10dallarbot.iam.gserviceaccount.com",
-  "universe_domain": "googleapis.com"
-};
+      "type": "service_account",
+      "project_id": "received10dallarbot",
+      "private_key_id": "PASTE_HERE",
+      "private_key": "-----BEGIN RSA PRIVATE KEY-----\nPASTE_HERE\n-----END RSA PRIVATE KEY-----\n",
+      "client_email": "firebase-adminsdk-xxxxx@received10dallarbot.iam.gserviceaccount.com",
+      "client_id": "PASTE_HERE",
+      "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+      "token_uri": "https://oauth2.googleapis.com/token",
+      "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+      "client_x509_cert_url": "PASTE_HERE"
+    };
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Firebase Init
