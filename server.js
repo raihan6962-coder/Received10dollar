@@ -19,19 +19,18 @@ const WEBAPP_URL = process.env.WEBAPP_URL || "https://your-app.up.railway.app";
 // Firebase Service Account — Firebase Console থেকে নামানো JSON এর ভেতরের জিনিস
 // Project Settings → Service Accounts → Generate new private key → সেই JSON এর content
 const FIREBASE_SERVICE_ACCOUNT = {
-  // ⚠️ এখানে তোমার Firebase Service Account JSON paste করো
-  // নিচে example দেওয়া আছে — এটা replace করতে হবে
   "type": "service_account",
   "project_id": "received10dallarbot",
-  "private_key_id": "YOUR_PRIVATE_KEY_ID",
-  "private_key": "-----BEGIN RSA PRIVATE KEY-----\nYOUR_PRIVATE_KEY_HERE\n-----END RSA PRIVATE KEY-----\n",
-  "client_email": "firebase-adminsdk-xxxxx@received10dallarbot.iam.gserviceaccount.com",
-  "client_id": "YOUR_CLIENT_ID",
+  "private_key_id": "e4279069be1c46a313d8246429d2702445998987",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC6yviKj02Ya4Sr\nZ00gj91Oh0E55SEXHyKMt7AazU32P8vY4VHHUVq/KTGYkyiPe2xYBPw8gv0d7wlE\nZnDo4j703f2ldWNatQgTF2I7TECMMCk8atxf3ThwdVvA3yQCotlIL/f+Q0p6TNQ3\n6FgXdRK/DBJsFCj4p8OUfofZdjSgtZmtFnQM9nR+1FvvZLryAln+UqIpND1/YqPT\nkYB8tRdYtjdc76RuUX8yEu4gWc66N070j2Xfb4kkPAcOYTlMwP/5fadZw5GN8EVk\nxxSBFrW6mtCNwLWMqDmq5sSUtBwFy4K+8zul4+lsmuA9tYv8keqk9rpIyQLs3a+/\n6vuq3TolAgMBAAECggEADRU1QOMrlfmF3R7K8J+9lN1KohGcdory4l86jDiv9Vzf\nhq0Kthv1Gql5yfbDTaq2hRhdoFFeWsUzZXaKrE0DCCcvjPICskeMArujC4XaNCzA\nCUrEwklzcAZQQFsrTFdNQk3rH9m6XYQvDaFji3UNiehVtqXXfsmlRwEbu7ft6gmK\nCwMaUx9P1fAFv+maZkfP5LWIdMVyGsmB3nxs/fsvJroGwHb4tax2f48XqwpBX5IO\ne1HWgxoS/Fytl2VtTw6JxR4qknTGXV2E4TpzNBf0RbbEEJl1bjCMY7VsnULYE3f7\nor2ZccbuNowWzYrXaAwU/FkH/J7FxWITickwFSlQ4QKBgQDt6iM4aD1czEpGgd2L\npMRcIM2qw9PV8RooNTyPsaJ0JOEApqzHqWlQ92w/YMkbhvLZdxr11uyUn/BaecYi\n8f+JSbtfXaeyT75S7uLGx5MB1LGxA/uLgyLVyvS765KZfBNCOXGnsf38Bjmxy56i\nTSPy+F1CxAyEHz95Xt8Yla6RFQKBgQDI/f6elCH5F8gcEXnuU0NRQs3qWz2vN+Vz\nuinzjMHMfNGD8lCEQttmO05WXKGMPC0Y3FUAUTRqMq8BbroJzo4SFbjMe0RTWebA\n6/XF7Z1f1Pj74T8NCX6NwQo2GD+ZLqttl0ZbY4p2eltX1HsUw/3DTKv23TGhcBau\n2l1Psleo0QKBgCNgamZL0bwHwI+lZd0K3gvY8NwQjGJGnJ4X9G5leoOMrExdfFmg\nDkH02IrACIdoVJoThNXDZKBg++toKhcuJtIyPYNbuMDh7KoGTYBDUs+14coxjmjb\nUgW6TRPYXo8mDPMO+aB27g5YmqGeZnM5xzusxKlV34qR3u1cNw4/y5pVAoGBAJqP\nX6bYqQthM1wKQGZ6FvE9WxXWFihQ5pzI0wvb+QfkEEXUKACdXRRPlN0qnHw3pkJQ\n5Pi6eYEU+qkyWdPCyFO16ocsX41tO9qtWTFcmUGhh9pCC3deDri5cr3IhdepIODE\njLEoacjULLvsxL1iPhlaM39B97F6fab2ev0XWvuRAoGBAMorVqvTg5RKl7lVtGow\nXbkqfg8PxnrC3CXyieedjWKWdw9lLA5C+i/ymJyxo2AzjvZbBUMRL2ab8G5GkcKj\nm78P1usm4rhrmP/83yZSYEdj2X0yr7nkEVegRyB95owBIH7c6kNDOGY3cgvPkFP7\nM4cGLc/v/yeb+pBwqYDADX7g\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-fbsvc@received10dallarbot.iam.gserviceaccount.com",
+  "client_id": "101534355015628418394",
   "auth_uri": "https://accounts.google.com/o/oauth2/auth",
   "token_uri": "https://oauth2.googleapis.com/token",
   "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "YOUR_CERT_URL"
-};
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40received10dallarbot.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // 🔥 Firebase Init
