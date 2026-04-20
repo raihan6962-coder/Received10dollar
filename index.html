@@ -147,14 +147,19 @@ const tg = window.Telegram?.WebApp;
 let user = null, refLink = "", ads = [], adWatching = false, adTimer = null;
 
 async function apiFetch(path, opts = {}) {
+  // initData নিজে থেকে নাও — multiple ways try করো
+  let initData = "";
+
+  if (tg && tg.initData && tg.initData.length > 0) {
+    initData = tg.initData;
+  }
+
   const headers = {
     "Content-Type": "application/json",
-    ...(opts.headers || {})
   };
 
-  // Always send initData if available
-  if (tg?.initData) {
-    headers["x-telegram-init-data"] = tg.initData;
+  if (initData) {
+    headers["x-telegram-init-data"] = initData;
   }
 
   const res = await fetch(path, {
@@ -198,12 +203,14 @@ window.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  // Check if Telegram WebApp is available
-  if (!tg || !tg.initData) {
+  // Wait a moment for Telegram to inject initData
+  await new Promise(r => setTimeout(r, 500));
+
+  if (!tg || !tg.initData || tg.initData.length === 0) {
     document.getElementById("loading").innerHTML = `
       <span style="font-size:2.5rem">⚠️</span>
-      <p style="font-size:.95rem;color:#fafafa">Open this via Telegram bot</p>
-      <p style="font-size:.78rem;color:#a1a1aa">This app only works inside Telegram</p>`;
+      <p style="font-size:.95rem;color:#fafafa;margin-top:8px">Open this app via Telegram bot</p>
+      <p style="font-size:.78rem;color:#a1a1aa;margin-top:4px">Tap the button in the bot to open</p>`;
     return;
   }
 
@@ -225,11 +232,10 @@ window.addEventListener("DOMContentLoaded", async () => {
     console.error("Boot error:", e);
     document.getElementById("loading").innerHTML = `
       <span style="font-size:2.5rem">⚠️</span>
-      <p style="font-size:.95rem;color:#fafafa">${e.message}</p>
-      <p style="font-size:.78rem;color:#a1a1aa">Please try again</p>`;
+      <p style="font-size:.95rem;color:#fafafa;margin-top:8px">${e.message}</p>
+      <button onclick="location.reload()" style="margin-top:16px;padding:10px 20px;background:var(--gold);border:none;border-radius:8px;cursor:pointer;font-weight:700">Try Again</button>`;
   }
 });
-
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // DASHBOARD
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
