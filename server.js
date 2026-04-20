@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3000;
 
 // ⚠️ এই WEBAPP_URL টা Railway deploy করার পরে তোমার Railway URL দিয়ে বদলাও
 // যেমন: https://received10bot.up.railway.app
-const WEBAPP_URL = process.env.WEBAPP_URL || "https://your-app.up.railway.app";
+const WEBAPP_URL = process.env.WEBAPP_URL || "https://received10dollar-production.up.railway.app/";
 
 // Firebase Service Account — Firebase Console থেকে নামানো JSON এর ভেতরের জিনিস
 // Project Settings → Service Accounts → Generate new private key → সেই JSON এর content
