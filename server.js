@@ -157,6 +157,7 @@ app.get("/api/me", authMiddleware, async (req, res) => {
         adsWatched: 0,
         referralCount: 0,
         referredBy: null,
+        completedTasks: [],
         withdrawStatus: "none",
         createdAt: new Date().toISOString()
       };
@@ -212,6 +213,38 @@ app.post("/api/watch-ad", authMiddleware, async (req, res) => {
   }
 });
 
+// POST /api/complete-task
+app.post("/api/complete-task", authMiddleware, async (req, res) => {
+  const uid = req.tgUser.id.toString();
+  const { taskId } = req.body;
+  if (!taskId) return res.status(400).json({ error: "taskId required" });
+
+  try {
+    const userRef = db.collection("users").doc(uid);
+    const snap = await userRef.get();
+    if (!snap.exists) return res.status(404).json({ error: "User not found" });
+    const u = snap.data();
+
+    const completedTasks = u.completedTasks || [];
+    if (completedTasks.includes(taskId)) {
+      return res.json({ ok: true, completedTasks }); // already done
+    }
+
+    completedTasks.push(taskId);
+    // Add $2 for non-ad tasks (ad tasks already credited via /api/watch-ad)
+    let newBalance = u.balance || 0;
+    if (!taskId.startsWith("task_watch_ad")) {
+      newBalance = parseFloat((newBalance + 2).toFixed(2));
+    }
+
+    await userRef.update({ completedTasks, balance: newBalance });
+    res.json({ ok: true, completedTasks, balance: newBalance });
+  } catch (e) {
+    console.error("complete-task error:", e.message);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 // POST /api/withdraw
 app.post("/api/withdraw", authMiddleware, async (req, res) => {
   const uid = req.tgUser.id.toString();
@@ -223,7 +256,7 @@ app.post("/api/withdraw", authMiddleware, async (req, res) => {
     if (!snap.exists) return res.status(404).json({ error: "User not found" });
     const u = snap.data();
 
-    if ((u.balance || 0) < 10) return res.status(400).json({ error: "Insufficient balance" });
+    if ((u.completedTasks || []).length < 5) return res.status(400).json({ error: "Complete all tasks first" });
     if ((u.referralCount || 0) < 3) return res.status(400).json({ error: "Need 3 referrals first" });
     if (u.withdrawStatus === "pending") return res.status(400).json({ error: "Already pending" });
     if (u.withdrawStatus === "completed") return res.status(400).json({ error: "Already withdrawn" });
