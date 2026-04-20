@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>💰 Received $10</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#f5c518;--gold2:#c9a414;--green:#22c55e;--red:#ef4444;
+  --bg:#0d0d0f;--s1:#18181b;--s2:#27272a;--bdr:#3f3f46;
+  --txt:#fafafa;--dim:#a1a1aa;--r:16px;--rs:10px;
+}
+html,body{min-height:100vh;background:var(--bg);color:var(--txt);font-family:'DM Sans',sans-serif}
+/* Loading */
+#loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:16px;color:var(--dim)}
+.orb{width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 40% 40%,var(--gold),#a07d10);animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+/* App shell */
+#app{display:none;flex-direction:column;min-height:100vh}
+header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:#111;border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:10}
+.logo{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--gold)}
+.user-name{font-size:.82rem;color:var(--dim)}
+main{flex:1;padding:20px 16px 60px;max-width:460px;margin:0 auto;width:100%;display:flex;flex-direction:column;gap:18px}
+/* Balance card */
+.bal-card{background:linear-gradient(135deg,#1c1a10,#1a1600);border:1px solid #4a3c00;border-radius:var(--r);padding:28px 24px 22px;text-align:center;position:relative;overflow:hidden}
+.bal-card::before{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(245,197,24,.2),transparent 70%)}
+.bal-lbl{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold2);margin-bottom:8px}
+.bal-amt{display:flex;align-items:flex-start;justify-content:center;gap:2px}
+.bal-${font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:700;color:var(--gold);padding-top:8px}
+.bal-num{font-family:'Syne',sans-serif;font-size:4.5rem;font-weight:800;color:var(--gold);line-height:1}
+.prog-track{margin-top:18px;height:8px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
+.prog-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--gold2),var(--gold));transition:width .8s cubic-bezier(.34,1.56,.64,1)}
+.prog-hint{font-size:.75rem;color:var(--dim);margin-top:10px}
+/* Status chips */
+.chips{display:flex;gap:10px}
+.chip{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;background:var(--s1);border:1px solid var(--bdr);border-radius:var(--rs);font-size:.72rem;color:var(--dim);transition:all .25s}
+.chip .ico{font-size:1.2rem}
+.chip.done{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.4);color:var(--green)}
+/* Section */
+.sec{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);padding:20px 16px;display:flex;flex-direction:column;gap:14px}
+.sec-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700}
+.sec-sub{font-size:.8rem;color:var(--dim)}
+/* Ads grid */
+.ads-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.ad-slot{aspect-ratio:1;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:.68rem;font-weight:600;cursor:pointer;background:var(--s2);border:1px solid var(--bdr);transition:transform .15s,background .2s;user-select:none}
+.ad-slot.watched{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.4);color:var(--green);cursor:default}
+.ad-slot.avail{background:rgba(245,197,24,.1);border-color:rgba(245,197,24,.4);color:var(--gold)}
+.ad-slot.avail:hover{transform:scale(1.06)}
+.ad-timer{font-size:1.2rem;font-weight:800;color:var(--gold)}
+.ad-viewer{background:var(--s2);border:1px solid var(--bdr);border-radius:var(--rs);overflow:hidden}
+.ad-viewer-hdr{padding:10px 14px;font-size:.78rem;color:var(--dim);border-bottom:1px solid var(--bdr)}
+.ad-content{padding:16px;min-height:80px}
+/* Referral */
+.ref-slots{display:flex;gap:10px}
+.ref-slot{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;border-radius:var(--rs);background:var(--s2);border:1px solid var(--bdr);font-size:.72rem;color:var(--dim)}
+.ref-slot .ico{font-size:1.5rem}
+.ref-slot.done{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.4);color:var(--green)}
+.ref-link{background:var(--s2);border:1px solid var(--bdr);border-radius:var(--rs);padding:12px;word-break:break-all;font-size:.7rem;color:var(--dim);font-family:monospace}
+.ref-hint{font-size:.72rem;color:var(--dim);text-align:center}
+/* Buttons */
+.btn{width:100%;padding:15px;border-radius:var(--rs);border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;transition:all .2s}
+.btn-gold{background:var(--gold);color:#000}
+.btn-gold:hover{background:#e0b316;transform:translateY(-1px)}
+.btn-green{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-size:1.1rem;padding:18px}
+.btn-green:hover{filter:brightness(1.1);transform:translateY(-2px)}
+.btn-green:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-green.pulse{animation:gbtn 1.8s ease-in-out infinite}
+@keyframes gbtn{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.4)}50%{box-shadow:0 0 0 12px rgba(34,197,94,0)}}
+.btn-ghost{padding:10px 18px;border-radius:8px;background:transparent;border:1px solid var(--bdr);color:var(--txt);cursor:pointer;font-size:.85rem;transition:background .2s}
+.btn-ghost:hover{background:var(--s2)}
+/* Notice */
+.notice{padding:14px 16px;border-radius:var(--rs);font-size:.83rem}
+.notice-y{background:rgba(245,197,24,.12);border:1px solid rgba(245,197,24,.3);color:var(--gold)}
+.notice-g{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:var(--green)}
+/* Toast */
+#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--s2);border:1px solid var(--bdr);color:var(--gold);padding:12px 22px;border-radius:999px;font-size:.83rem;font-weight:600;z-index:200;opacity:0;transition:all .3s;pointer-events:none}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* Modal */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);display:flex;align-items:flex-end;justify-content:center;z-index:50;animation:fin .2s ease}
+@keyframes fin{from{opacity:0}to{opacity:1}}
+.modal{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r) var(--r) 0 0;padding:28px 20px 48px;width:100%;max-width:460px;position:relative;animation:sup .3s cubic-bezier(.34,1.56,.64,1);display:flex;flex-direction:column;gap:16px}
+@keyframes sup{from{transform:translateY(80px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-x{position:absolute;top:14px;right:16px;background:var(--s2);border:none;color:var(--dim);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.85rem}
+.modal-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800}
+.modal-input{width:100%;padding:14px;background:var(--s2);border:1px solid var(--bdr);border-radius:var(--rs);color:var(--txt);font-size:.9rem;outline:none;transition:border-color .2s;resize:vertical}
+.modal-input:focus{border-color:var(--gold)}
+.modal-err{color:var(--red);font-size:.8rem}
+.methods{display:flex;gap:10px}
+.mth-btn{flex:1;padding:12px;border-radius:var(--rs);background:var(--s2);border:1px solid var(--bdr);color:var(--dim);cursor:pointer;font-size:.9rem;font-weight:600;transition:all .2s}
+.mth-btn.active{background:rgba(245,197,24,.15);border-color:var(--gold);color:var(--gold)}
+.success-box{display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px 0;text-align:center}
+.success-ico{font-size:3rem}
+.success-box h3{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800}
+.success-box p{color:var(--dim)}
+/* Admin */
+#admin-page{display:none;min-height:100vh;background:var(--bg)}
+.adm-login{min-height:100vh;display:flex;align-items:center;justify-content:center}
+.adm-login-card{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);padding:36px 28px;width:100%;max-width:360px;display:flex;flex-direction:column;gap:16px}
+.adm-login-card h1{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800}
+.adm-shell{display:flex;flex-direction:column}
+.adm-hdr{padding:16px 20px;background:var(--s1);border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:10;display:flex;flex-direction:column;gap:12px}
+.adm-hdr h1{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800}
+.adm-tabs{display:flex;gap:8px;overflow-x:auto}
+.adm-tab{padding:8px 16px;border-radius:8px;border:1px solid var(--bdr);background:transparent;color:var(--dim);cursor:pointer;font-size:.83rem;white-space:nowrap;transition:all .2s}
+.adm-tab.active{background:var(--gold);border-color:var(--gold);color:#000;font-weight:700}
+.adm-main{padding:20px 16px;max-width:900px;margin:0 auto;width:100%}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px}
+.stat-card{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);padding:18px 14px;text-align:center;display:flex;flex-direction:column;gap:8px}
+.stat-ico{font-size:1.8rem}
+.stat-val{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--gold)}
+.stat-lbl{font-size:.72rem;color:var(--dim)}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+th{padding:10px 12px;text-align:left;color:var(--dim);border-bottom:1px solid var(--bdr);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(63,63,70,.4)}
+tr:hover td{background:rgba(255,255,255,.02)}
+.badge{display:inline-block;padding:3px 9px;border-radius:999px;font-size:.7rem;font-weight:600}
+.b-none{background:rgba(161,161,170,.15);color:var(--dim)}
+.b-pending{background:rgba(245,197,24,.15);color:var(--gold)}
+.b-completed{background:rgba(34,197,94,.15);color:var(--green)}
+.b-rejected{background:rgba(239,68,68,.15);color:var(--red)}
+.ad-form{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
+.ad-form h3{font-family:'Syne',sans-serif;font-weight:700}
+.form-row{display:flex;gap:10px}
+.form-row .btn-ghost{padding:10px 18px}
+.ad-row{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--rs);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+.ad-row-acts{display:flex;gap:8px}
+.btn-sm{padding:6px 12px;border-radius:8px;border:none;cursor:pointer;font-size:.78rem;transition:background .2s}
+.btn-sm-y{background:rgba(245,197,24,.15);color:var(--gold)}
+.btn-sm-y:hover{background:rgba(245,197,24,.3)}
+.btn-sm-r{background:rgba(239,68,68,.15);color:var(--red)}
+.btn-sm-r:hover{background:rgba(239,68,68,.3)}
+.btn-sm-g{background:rgba(34,197,94,.15);color:var(--green)}
+.btn-sm-g:hover{background:rgba(34,197,94,.3)}
+.empty-msg{color:var(--dim);font-size:.83rem;padding:20px 0;text-align:center}
+</style>
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loading">
+  <div class="orb"></div>
+  <p>লোড হচ্ছে…</p>
+</div>
+
+<!-- Main User App -->
+<div id="app">
+  <header>
+    <div class="logo">💰 Received $10</div>
+    <div class="user-name" id="user-name"></div>
+  </header>
+  <main id="main-content"></main>
+</div>
+
+<!-- Admin Page -->
+<div id="admin-page"></div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CONFIG
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const API = ""; // same origin — server serves this file
+
+const tg = window.Telegram?.WebApp;
+let userData = null;
+let referralLink = "";
+let allAds = [];
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// HELPERS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function getInitData() {
+  return tg?.initData || "";
+}
+
+async function apiFetch(path, opts = {}) {
+  const res = await fetch(API + path, {
+    ...opts,
+    headers: {
+      "Content-Type": "application/json",
+      "x-telegram-init-data": getInitData(),
+      ...(opts.headers || {})
+    },
+    body: opts.body ? JSON.stringify(opts.body) : undefined
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Error");
+  return data;
+}
+
+async function adminFetch(path, opts = {}, pw) {
+  const res = await fetch(API + path, {
+    ...opts,
+    headers: {
+      "Content-Type": "application/json",
+      "x-admin-pw": pw,
+      ...(opts.headers || {})
+    },
+    body: opts.body ? JSON.stringify(opts.body) : undefined
+  });
+  return res.json();
+}
+
+function showToast(msg) {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), 2800);
+}
+
+function $$(html) {
+  const d = document.createElement("div");
+  d.innerHTML = html;
+  return d.firstElementChild;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ROUTING
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+window.addEventListener("DOMContentLoaded", async () => {
+  tg?.ready();
+  tg?.expand();
+
+  if (window.location.pathname === "/admin") {
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("admin-page").style.display = "block";
+    renderAdminLogin();
+    return;
+  }
+
+  // Load user app
+  try {
+    userData = await apiFetch("/api/me");
+    const [adsData, refData] = await Promise.all([
+      apiFetch("/api/ads"),
+      apiFetch("/api/referral-link")
+    ]);
+    allAds = adsData;
+    referralLink = refData.link;
+
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("app").style.display = "flex";
+    document.getElementById("user-name").textContent = `হ্যালো, ${userData.firstName} 👋`;
+    renderDashboard();
+  } catch (e) {
+    document.getElementById("loading").innerHTML = `<span style="font-size:2rem">⚠️</span><p>Telegram দিয়ে খোলো</p>`;
+  }
+});
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// DASHBOARD
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function renderDashboard() {
+  const u = userData;
+  const adsOk = u.adsWatched >= 5;
+  const refOk = u.referralCount >= 3;
+  const canW = adsOk && refOk;
+  const pct = Math.min((u.balance / 10) * 100, 100);
+
+  const main = document.getElementById("main-content");
+  main.innerHTML = `
+    <!-- Balance -->
+    <div class="bal-card">
+      <p class="bal-lbl">তোমার ব্যালেন্স</p>
+      <div class="bal-amt"><span class="bal-$">$</span><span class="bal-num" id="bal-num">${u.balance.toFixed(2)}</span></div>
+      <div class="prog-track"><div class="prog-fill" id="prog" style="width:${pct}%"></div></div>
+      <p class="prog-hint" id="prog-hint">${pct<100 ? `আরও $${(10-u.balance).toFixed(2)} দরকার`:"🎉 লক্ষ্য পূরণ!"}</p>
+    </div>
+
+    <!-- Status chips -->
+    <div class="chips">
+      <div class="chip ${adsOk?"done":""}"><span class="ico">📺</span><span>Ads ${u.adsWatched}/5</span></div>
+      <div class="chip ${refOk?"done":""}"><span class="ico">👥</span><span>Ref ${u.referralCount}/3</span></div>
+      <div class="chip ${canW?"done":""}"><span class="ico">💸</span><span>${u.withdrawStatus==="pending"?"Pending":u.withdrawStatus==="completed"?"Paid ✓":canW?"Ready!":"Locked"}</span></div>
+    </div>
+
+    <!-- Ads Section -->
+    ${!adsOk ? renderAdsSection(u) : ""}
+
+    <!-- Referral Section -->
+    ${adsOk ? renderRefSection(u) : ""}
+
+    <!-- Withdraw -->
+    ${canW && u.withdrawStatus==="none" ? `<button class="btn btn-green pulse" id="w-btn">💸 $10 তুলে নাও এখনই</button>` : ""}
+    ${u.withdrawStatus==="pending" ? `<div class="notice notice-y">⏳ Withdrawal process হচ্ছে। শীঘ্রই পাঠানো হবে!</div>` : ""}
+    ${u.withdrawStatus==="completed" ? `<div class="notice notice-g">✅ পেমেন্ট পাঠানো হয়েছে!</div>` : ""}
+  `;
+
+  // Attach events
+  document.getElementById("w-btn")?.addEventListener("click", openWithdrawModal);
+  attachAdEvents(u);
+  attachRefEvent();
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ADS SECTION
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function renderAdsSection(u) {
+  const slots = Array.from({length:5},(_,i) => {
+    const watched = i < u.adsWatched;
+    const avail = i === u.adsWatched && allAds.length > 0;
+    return `<div class="ad-slot ${watched?"watched":avail?"avail":""}" data-idx="${i}">
+      ${watched ? "✅<span>+$2</span>" : avail ? "▶<span>Watch</span>" : `🔒<span>$${(i+1)*2}</span>`}
+    </div>`;
+  }).join("");
+
+  return `
+    <div class="sec">
+      <h2 class="sec-title">📺 Ad দেখো · $2 আয় করো</h2>
+      <p class="sec-sub">আরও ${5-u.adsWatched}টা ad দেখলে $10 হবে</p>
+      <div class="ads-grid" id="ads-grid">${slots}</div>
+      <div id="ad-viewer-wrap"></div>
+      ${allAds.length===0?`<div class="notice notice-y">⏳ Ad শীঘ্রই আসছে</div>`:""}
+    </div>`;
+}
+
+let adTimer = null;
+let adWatching = false;
+
+function attachAdEvents(u) {
+  const grid = document.getElementById("ads-grid");
+  if (!grid) return;
+  grid.querySelectorAll(".ad-slot.avail").forEach(slot => {
+    slot.addEventListener("click", () => {
+      if (adWatching) return;
+      const idx = parseInt(slot.dataset.idx) - u.adsWatched;
+      const ad = allAds[idx] || allAds[0];
+      if (!ad) return;
+      startWatchAd(ad, u);
+    });
+  });
+}
+
+function startWatchAd(ad, u) {
+  adWatching = true;
+  let countdown = 15;
+  const wrap = document.getElementById("ad-viewer-wrap");
+  if (!wrap) return;
+
+  wrap.innerHTML = `
+    <div class="ad-viewer">
+      <div class="ad-viewer-hdr" id="ad-hdr">Ad চলছে… <span id="cntdn">${countdown}s</span> বাকি</div>
+      <div class="ad-content" id="ad-content"></div>
+    </div>`;
+
+  // Inject ad script
+  const contentEl = document.getElementById("ad-content");
+  const tmp = document.createElement("div");
+  tmp.innerHTML = ad.script;
+  tmp.querySelectorAll("script").forEach(s => {
+    const ns = document.createElement("script");
+    ns.textContent = s.textContent;
+    if (s.src) ns.src = s.src;
+    contentEl.appendChild(ns);
+  });
+  contentEl.appendChild(tmp);
+
+  adTimer = setInterval(() => {
+    countdown--;
+    const el = document.getElementById("cntdn");
+    if (el) el.textContent = countdown + "s";
+    if (countdown <= 0) {
+      clearInterval(adTimer);
+      finishAd(ad.id);
+    }
+  }, 1000);
+}
+
+async function finishAd(adId) {
+  try {
+    const res = await apiFetch("/api/watch-ad", { method:"POST", body:{ adId } });
+    userData.adsWatched = res.adsWatched;
+    userData.balance = res.balance;
+    showToast(`🎉 +$2 যোগ হলো! Balance: $${res.balance.toFixed(2)}`);
+  } catch(e) {
+    showToast(e.message === "Already watched" ? "ইতিমধ্যে দেখা হয়েছে" : e.message);
+  }
+  adWatching = false;
+  renderDashboard();
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// REFERRAL SECTION
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function renderRefSection(u) {
+  const slots = [0,1,2].map(i => `
+    <div class="ref-slot ${i<u.referralCount?"done":""}">
+      <span class="ico">${i<u.referralCount?"✅":"👤"}</span>
+      <span>বন্ধু ${i+1}</span>
+    </div>`).join("");
+
+  return `
+    <div class="sec">
+      <h2 class="sec-title">👥 বন্ধু আনো · Withdraw খোলো</h2>
+      <p class="sec-sub">${u.referralCount>=3?"🎉 সব referral সম্পন্ন!":"আরও "+(3-u.referralCount)+"জন বন্ধু আনলে $10 তুলতে পারবে"}</p>
+      <div class="ref-slots">${slots}</div>
+      <div class="ref-link">${referralLink}</div>
+      <button class="btn btn-gold" id="share-btn">🔗 Referral Link শেয়ার করো</button>
+      <p class="ref-hint">বন্ধুকে bot start করতে হবে তবেই count হবে</p>
+    </div>`;
+}
+
+function attachRefEvent() {
+  document.getElementById("share-btn")?.addEventListener("click", () => {
+    if (tg && referralLink) {
+      tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent("🎁 Join করো, FREE $10 পাও!")}`);
+    } else {
+      navigator.clipboard?.writeText(referralLink);
+      showToast("Link copied!");
+    }
+  });
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// WITHDRAW MODAL
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function openWithdrawModal() {
+  let method = "bkash";
+  const overlay = $$(`
+    <div class="overlay" id="ov">
+      <div class="modal">
+        <button class="modal-x" id="mx">✕</button>
+        <h3 class="modal-title">💸 $10 Withdraw করো</h3>
+        <div class="methods">
+          <button class="mth-btn active" id="m-bkash">🏦 bKash</button>
+          <button class="mth-btn" id="m-usdt">₮ USDT BEP20</button>
+        </div>
+        <input class="modal-input" id="w-acc" placeholder="bKash নম্বর (01XXXXXXXXX)"/>
+        <p class="modal-err" id="w-err"></p>
+        <button class="btn btn-green" id="w-submit">Submit করো</button>
+      </div>
+    </div>`);
+
+  document.body.appendChild(overlay);
+
+  const setMethod = (m) => {
+    method = m;
+    overlay.querySelector("#m-bkash").classList.toggle("active", m==="bkash");
+    overlay.querySelector("#m-usdt").classList.toggle("active", m==="usdt");
+    overlay.querySelector("#w-acc").placeholder = m==="bkash" ? "bKash নম্বর (01XXXXXXXXX)" : "BEP20 ঠিকানা (0x...)";
+  };
+
+  overlay.querySelector("#mx").onclick = () => overlay.remove();
+  overlay.querySelector("#ov").onclick = (e) => { if(e.target.id==="ov") overlay.remove(); };
+  overlay.querySelector("#m-bkash").onclick = () => setMethod("bkash");
+  overlay.querySelector("#m-usdt").onclick = () => setMethod("usdt");
+
+  overlay.querySelector("#w-submit").onclick = async () => {
+    const acc = overlay.querySelector("#w-acc").value.trim();
+    const err = overlay.querySelector("#w-err");
+    if (!acc) { err.textContent = "Account details দাও"; return; }
+    err.textContent = "";
+    overlay.querySelector("#w-submit").textContent = "হচ্ছে…";
+    overlay.querySelector("#w-submit").disabled = true;
+    try {
+      await apiFetch("/api/withdraw", { method:"POST", body:{ method, account: acc } });
+      overlay.querySelector(".modal").innerHTML = `
+        <div class="success-box">
+          <div class="success-ico">🎉</div>
+          <h3>Withdrawal জমা হয়েছে!</h3>
+          <p>২৪ ঘণ্টার মধ্যে $10 পাঠানো হবে।</p>
+          <button class="btn btn-gold" onclick="document.getElementById('ov').remove()">ঠিক আছে</button>
+        </div>`;
+      userData.withdrawStatus = "pending";
+      renderDashboard();
+    } catch(e) {
+      err.textContent = e.message;
+      overlay.querySelector("#w-submit").textContent = "Submit করো";
+      overlay.querySelector("#w-submit").disabled = false;
+    }
+  };
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ADMIN PANEL
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let adminPw = "";
+let adminTab = "analytics";
+
+function renderAdminLogin() {
+  const pg = document.getElementById("admin-page");
+  pg.innerHTML = `
+    <div class="adm-login">
+      <div class="adm-login-card">
+        <h1>🔐 Admin Panel</h1>
+        <input class="modal-input" type="password" id="pw-inp" placeholder="Password দাও" />
+        <button class="btn btn-gold" id="pw-btn">Login</button>
+      </div>
+    </div>`;
+
+  const login = () => {
+    const pw = document.getElementById("pw-inp").value;
+    if (pw === "2808") { adminPw = pw; renderAdminShell(); }
+    else { showToast("❌ ভুল password"); }
+  };
+  document.getElementById("pw-btn").onclick = login;
+  document.getElementById("pw-inp").onkeydown = e => { if(e.key==="Enter") login(); };
+}
+
+function renderAdminShell() {
+  const pg = document.getElementById("admin-page");
+  pg.innerHTML = `
+    <div class="adm-shell">
+      <div class="adm-hdr">
+        <h1>⚙️ Admin Panel</h1>
+        <div class="adm-tabs">
+          ${["analytics","users","ads","withdrawals"].map(t=>`<button class="adm-tab ${t===adminTab?"active":""}" data-tab="${t}">${t.charAt(0).toUpperCase()+t.slice(1)}</button>`).join("")}
+        </div>
+      </div>
+      <div class="adm-main" id="adm-content">লোড হচ্ছে…</div>
+    </div>`;
+
+  pg.querySelectorAll(".adm-tab").forEach(btn => {
+    btn.onclick = () => {
+      adminTab = btn.dataset.tab;
+      pg.querySelectorAll(".adm-tab").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      loadAdminTab();
+    };
+  });
+  loadAdminTab();
+}
+
+async function loadAdminTab() {
+  const el = document.getElementById("adm-content");
+  el.innerHTML = "লোড হচ্ছে…";
+  if (adminTab === "analytics") await renderAnalytics(el);
+  else if (adminTab === "users") await renderUsers(el);
+  else if (adminTab === "ads") await renderAdsAdmin(el);
+  else if (adminTab === "withdrawals") await renderWithdrawals(el);
+}
+
+async function renderAnalytics(el) {
+  const d = await adminFetch("/api/admin/analytics", {}, adminPw);
+  el.innerHTML = `
+    <div class="stats-grid">
+      ${[["👥","Total Users",d.totalUsers],["💰","Total Balance","$"+d.totalBalance],["📺","Ads Watched",d.totalAds],["⏳","Pending",d.pendingWithdraws],["✅","Completed",d.completedWithdraws]]
+        .map(([ico,lbl,val])=>`<div class="stat-card"><div class="stat-ico">${ico}</div><div class="stat-val">${val}</div><div class="stat-lbl">${lbl}</div></div>`).join("")}
+    </div>`;
+}
+
+async function renderUsers(el) {
+  const users = await adminFetch("/api/admin/users", {}, adminPw);
+  el.innerHTML = `
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>ID</th><th>নাম</th><th>Balance</th><th>Ads</th><th>Refs</th><th>Withdraw</th><th>Join</th></tr></thead>
+        <tbody>
+          ${users.map(u=>`<tr>
+            <td>${u.telegramId}</td>
+            <td>${u.firstName}${u.username?" @"+u.username:""}</td>
+            <td>$${(u.balance||0).toFixed(2)}</td>
+            <td>${u.adsWatched||0}/5</td>
+            <td>${u.referralCount||0}/3</td>
+            <td><span class="badge b-${u.withdrawStatus||"none"}">${u.withdrawStatus||"none"}</span></td>
+            <td>${(u.createdAt||"").slice(0,10)}</td>
+          </tr>`).join("")}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+async function renderAdsAdmin(el) {
+  const ads = await adminFetch("/api/admin/ads", {}, adminPw);
+  el.innerHTML = `
+    <div class="ad-form" id="ad-form">
+      <h3 id="form-title">➕ নতুন Ad যোগ করো</h3>
+      <input class="modal-input" id="ad-name" placeholder="Ad এর নাম"/>
+      <textarea class="modal-input" id="ad-script" rows="4" placeholder="Monetag script/embed code paste করো"></textarea>
+      <div class="form-row">
+        <button class="btn btn-gold" id="ad-save" style="flex:1;padding:12px">Save করো</button>
+        <button class="btn-ghost" id="ad-cancel" style="display:none">Cancel</button>
+      </div>
+    </div>
+    <div id="ads-list">
+      ${ads.length===0 ? `<p class="empty-msg">কোনো ad নেই। উপরে যোগ করো।</p>` :
+        ads.map(a=>`
+        <div class="ad-row">
+          <div><strong>${a.name}</strong> <span class="badge ${a.active?"b-completed":"b-none"}">${a.active?"Active":"Inactive"}</span></div>
+          <div class="ad-row-acts">
+            <button class="btn-sm btn-sm-y" onclick="editAd('${a.id}','${encodeURIComponent(a.name)}','${encodeURIComponent(a.script)}')">Edit</button>
+            <button class="btn-sm btn-sm-r" onclick="deleteAd('${a.id}')">Delete</button>
+          </div>
+        </div>`).join("")}
+    </div>`;
+
+  let editingId = null;
+  document.getElementById("ad-save").onclick = async () => {
+    const name = document.getElementById("ad-name").value.trim();
+    const script = document.getElementById("ad-script").value.trim();
+    if (!name || !script) { showToast("নাম ও script দাও"); return; }
+    if (editingId) {
+      await adminFetch(`/api/admin/ads/${editingId}`, { method:"PUT", body:{name,script} }, adminPw);
+    } else {
+      await adminFetch("/api/admin/ads", { method:"POST", body:{name,script} }, adminPw);
+    }
+    showToast("✅ Saved!");
+    loadAdminTab();
+  };
+  document.getElementById("ad-cancel").onclick = () => { editingId=null; document.getElementById("ad-name").value=""; document.getElementById("ad-script").value=""; document.getElementById("form-title").textContent="➕ নতুন Ad যোগ করো"; document.getElementById("ad-cancel").style.display="none"; };
+
+  window.editAd = (id, name, script) => {
+    editingId = id;
+    document.getElementById("ad-name").value = decodeURIComponent(name);
+    document.getElementById("ad-script").value = decodeURIComponent(script);
+    document.getElementById("form-title").textContent = "✏️ Ad Edit করো";
+    document.getElementById("ad-cancel").style.display = "block";
+    document.getElementById("ad-form").scrollIntoView({behavior:"smooth"});
+  };
+  window.deleteAd = async (id) => {
+    if (!confirm("এই ad delete করবে?")) return;
+    await adminFetch(`/api/admin/ads/${id}`, { method:"DELETE" }, adminPw);
+    showToast("Deleted");
+    loadAdminTab();
+  };
+}
+
+async function renderWithdrawals(el) {
+  const list = await adminFetch("/api/admin/withdrawals", {}, adminPw);
+  el.innerHTML = `
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>User ID</th><th>Method</th><th>Account</th><th>Amount</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+        <tbody>
+          ${list.map(w=>`<tr>
+            <td>${w.userId}</td>
+            <td>${w.method}</td>
+            <td>${w.account}</td>
+            <td>$${w.amount}</td>
+            <td><span class="badge b-${w.status}">${w.status}</span></td>
+            <td>${(w.createdAt||"").slice(0,10)}</td>
+            <td>
+              ${w.status==="pending"?`
+                <button class="btn-sm btn-sm-g" onclick="updateW('${w.id}','completed')">✅ Pay</button>
+                <button class="btn-sm btn-sm-r" onclick="updateW('${w.id}','rejected')">✕</button>`:"-"}
+            </td>
+          </tr>`).join("")}
+        </tbody>
+      </table>
+      ${list.length===0?`<p class="empty-msg">কোনো withdrawal request নেই।</p>`:""}
+    </div>`;
+
+  window.updateW = async (id, status) => {
+    await adminFetch(`/api/admin/withdrawals/${id}`, { method:"PUT", body:{status} }, adminPw);
+    showToast(status==="completed"?"✅ Paid!":"Rejected");
+    loadAdminTab();
+  };
+}
+</script>
+</body>
+</html>
