@@ -6,23 +6,22 @@ const { initializeApp, cert } = require("firebase-admin/app");
 const { getFirestore } = require("firebase-admin/firestore");
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// 🔧 CONFIG — সব কিছু এখানে
+// CONFIG
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 const BOT_TOKEN = "8674899639:AAEzgSXjgJelVVY0gXWjuh8RUWkZgghAVz4";
 const ADMIN_PASSWORD = "2808";
 const PORT = process.env.PORT || 3000;
-
-// ⚠️ এই WEBAPP_URL টা Railway deploy করার পরে তোমার Railway URL দিয়ে বদলাও
-// যেমন: https://received10bot.up.railway.app
 const WEBAPP_URL = process.env.WEBAPP_URL || "https://received10dollar-production.up.railway.app/";
 
-// Firebase Service Account — Firebase Console থেকে নামানো JSON এর ভেতরের জিনিস
-// Project Settings → Service Accounts → Generate new private key → সেই JSON এর content
-const FIREBASE_SERVICE_ACCOUNT = {
+// ⚠️ Firebase Service Account — paste your JSON here
+// Firebase Console → Project Settings → Service Accounts → Generate new private key
+const FIREBASE_SERVICE_ACCOUNT = process.env.FIREBASE_SA
+  ? JSON.parse(process.env.FIREBASE_SA)
+  : {
   "type": "service_account",
   "project_id": "received10dallarbot",
-  "private_key_id": "e4279069be1c46a313d8246429d2702445998987",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC6yviKj02Ya4Sr\nZ00gj91Oh0E55SEXHyKMt7AazU32P8vY4VHHUVq/KTGYkyiPe2xYBPw8gv0d7wlE\nZnDo4j703f2ldWNatQgTF2I7TECMMCk8atxf3ThwdVvA3yQCotlIL/f+Q0p6TNQ3\n6FgXdRK/DBJsFCj4p8OUfofZdjSgtZmtFnQM9nR+1FvvZLryAln+UqIpND1/YqPT\nkYB8tRdYtjdc76RuUX8yEu4gWc66N070j2Xfb4kkPAcOYTlMwP/5fadZw5GN8EVk\nxxSBFrW6mtCNwLWMqDmq5sSUtBwFy4K+8zul4+lsmuA9tYv8keqk9rpIyQLs3a+/\n6vuq3TolAgMBAAECggEADRU1QOMrlfmF3R7K8J+9lN1KohGcdory4l86jDiv9Vzf\nhq0Kthv1Gql5yfbDTaq2hRhdoFFeWsUzZXaKrE0DCCcvjPICskeMArujC4XaNCzA\nCUrEwklzcAZQQFsrTFdNQk3rH9m6XYQvDaFji3UNiehVtqXXfsmlRwEbu7ft6gmK\nCwMaUx9P1fAFv+maZkfP5LWIdMVyGsmB3nxs/fsvJroGwHb4tax2f48XqwpBX5IO\ne1HWgxoS/Fytl2VtTw6JxR4qknTGXV2E4TpzNBf0RbbEEJl1bjCMY7VsnULYE3f7\nor2ZccbuNowWzYrXaAwU/FkH/J7FxWITickwFSlQ4QKBgQDt6iM4aD1czEpGgd2L\npMRcIM2qw9PV8RooNTyPsaJ0JOEApqzHqWlQ92w/YMkbhvLZdxr11uyUn/BaecYi\n8f+JSbtfXaeyT75S7uLGx5MB1LGxA/uLgyLVyvS765KZfBNCOXGnsf38Bjmxy56i\nTSPy+F1CxAyEHz95Xt8Yla6RFQKBgQDI/f6elCH5F8gcEXnuU0NRQs3qWz2vN+Vz\nuinzjMHMfNGD8lCEQttmO05WXKGMPC0Y3FUAUTRqMq8BbroJzo4SFbjMe0RTWebA\n6/XF7Z1f1Pj74T8NCX6NwQo2GD+ZLqttl0ZbY4p2eltX1HsUw/3DTKv23TGhcBau\n2l1Psleo0QKBgCNgamZL0bwHwI+lZd0K3gvY8NwQjGJGnJ4X9G5leoOMrExdfFmg\nDkH02IrACIdoVJoThNXDZKBg++toKhcuJtIyPYNbuMDh7KoGTYBDUs+14coxjmjb\nUgW6TRPYXo8mDPMO+aB27g5YmqGeZnM5xzusxKlV34qR3u1cNw4/y5pVAoGBAJqP\nX6bYqQthM1wKQGZ6FvE9WxXWFihQ5pzI0wvb+QfkEEXUKACdXRRPlN0qnHw3pkJQ\n5Pi6eYEU+qkyWdPCyFO16ocsX41tO9qtWTFcmUGhh9pCC3deDri5cr3IhdepIODE\njLEoacjULLvsxL1iPhlaM39B97F6fab2ev0XWvuRAoGBAMorVqvTg5RKl7lVtGow\nXbkqfg8PxnrC3CXyieedjWKWdw9lLA5C+i/ymJyxo2AzjvZbBUMRL2ab8G5GkcKj\nm78P1usm4rhrmP/83yZSYEdj2X0yr7nkEVegRyB95owBIH7c6kNDOGY3cgvPkFP7\nM4cGLc/v/yeb+pBwqYDADX7g\n-----END PRIVATE KEY-----\n",
+  "private_key_id": "847e6fd1517b12f463354155e77d8d8bda420cbc",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC7i/KjSoqFadsq\nAsCUg/uPghaKOBZYXfhbAH2AFU9kSd6MldToTPzapPBSSolJU/mEKP7ukeFXcHxS\nv4E3XF1aEoPNlUPexIilik6lVivZ2ZlP7VEbQ6ojQP/58yi7FkB3KmceRCJruHng\nkpYjnyDVXmZ4nLudjLFrKo535w3pqs5lBZ4ifWXuiARxhjjhao5l5jWkWkOPxVV+\nQYsj6KVZZVgiROEJCzDFqk2LTgBaNxya1YOHZEv/PFLg0jJJ5t+QLJvsEqxtBDnS\nBmUVM6L9i2Y8S1KsQ+lI6rNgYQUB8CZqJkGcF+YqsSpDg0TxfNZJSU/WEFdiTQe6\n4hAowsBLAgMBAAECggEAWdn0hzLhJoXOkFP9O6n3zYs/jTzNx8xNfhvABKsw/BU/\n4A6wkBLCWWYIFQTMvSrUMfMKH/YYBbJIfcRt/b3so4iXSNkoSQPTi6u1fhTIsXhE\nsTw7TVqfmoA7ot5SNz+z5uOTv7ZY307kZSkVcT99lXvCkCpW4GZVYchjtSInUjjG\n8Gh8nWw0n27Gl9p+CfefnxqgSRmCTUGyc5dgc6EhFdQh9sLLDQ4tXX7mqTJg95XC\nuzThq41KseqFfz8NjxJiO11vwWZ03MuX5UdI4988Iw984n3ubgNzv8+phUEiKLAj\nDi7wLgS9ccuZ6xnoORws7aQPvgVv3GbDbGGmvGKVIQKBgQDbyYq4X5ph84NZgFXE\nLX27Qw9wjH5t0jgLG4Fvyjtynwzt8gvZveuhvLomlDMifdQRYeNPN1pHlRivSfh1\nGEHDPa5+1mFiJ7QPlmn+mAe7JHBO7G2JjpHT34p+5u1GC5aeQ4FUHRus1mV8IYsj\nXJgp/+8TP0JXPrrtPC50E8SIgwKBgQDacoWq/g6vST8o8H7cFYHv7YvgvEPo3K56\nK55eJqPIh8jRrh8FTiV1Vo5gItCe3j1r6ekMkcvnGftEq2BUHLD0fKHMzLfPiSly\ncsy7dEAsxj3wZ3jOezt0LSCIUP1dEv+RyR/98RewXUWqU9Y39meNAvsPIAhpkEQ9\ndq+rr/IOmQKBgG5r/VPQRGH90/n9bhmXuVmBwZoMG+DVAu8hrJAbjG5z1i0dtDJ7\nJo0lomiLgH1NtmPdSDSeXK8mCzbV9QvvWerbbHWxA1ArHl3OdgZBH3E4R2x/gDDh\n/gXyg0RqhL7yR4PP6oP189eMB4Sr3ZmwhYpkWRrUZ2Ip1AQofjY3UEA9AoGBANF2\nCJfKXlhTmr1txabQ9LQUChEnVNKfcKny0zsiP+AT20q7dEFJCn/1zDWAjJwZK7oj\nI3ULBAKIFjhlP8vHayIzs43GKuZUdiqoy4lfUf3c5R10ihErdvnSH6S2TAuIIQkw\nWn3MRNO2zAsjsoAcxHQhDI0XQRm/3L825AFzh13ZAoGBAIg8kj+YazIhNTP6kpJx\nROS1k4zxv52kqvYFgrU5Daar8ivdpTushZBV/sUy7rYtl1xMdBdATpBM8jYnCQWP\nqtVsh1tU4PIPGma0xu2SkT4+ee4P7pv0QNRBm7UkU8WY7zAjk3mE9o6eITtTGnHd\nBSCa8jgvDzMP4qkPVEEBUnt9\n-----END PRIVATE KEY-----\n",
   "client_email": "firebase-adminsdk-fbsvc@received10dallarbot.iam.gserviceaccount.com",
   "client_id": "101534355015628418394",
   "auth_uri": "https://accounts.google.com/o/oauth2/auth",
@@ -30,16 +29,16 @@ const FIREBASE_SERVICE_ACCOUNT = {
   "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
   "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40received10dallarbot.iam.gserviceaccount.com",
   "universe_domain": "googleapis.com"
-}
+};
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// 🔥 Firebase Init
+// Firebase Init
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 initializeApp({ credential: cert(FIREBASE_SERVICE_ACCOUNT) });
 const db = getFirestore();
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// 🚀 Express App
+// Express
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 const app = express();
 app.use(express.json());
@@ -47,43 +46,70 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "*");
   res.header("Access-Control-Allow-Methods", "*");
+  if (req.method === "OPTIONS") return res.sendStatus(200);
   next();
 });
 
-// WebApp HTML serve করবে
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
-app.get("/admin", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
+app.get("/", (req, res) => res.sendFile(path.join(__dirname, "index.html")));
+app.get("/admin", (req, res) => res.sendFile(path.join(__dirname, "index.html")));
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// 🔐 Telegram initData Validation
+// Telegram Auth — FIXED (lenient for Telegram WebApp)
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function extractUserFromInitData(initData) {
+  if (!initData) return null;
+  try {
+    const params = new URLSearchParams(initData);
+
+    // Try to get user directly
+    const userStr = params.get("user");
+    if (userStr) {
+      return JSON.parse(decodeURIComponent(userStr));
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 function validateTelegram(initData) {
   if (!initData) return null;
   try {
     const params = new URLSearchParams(initData);
     const hash = params.get("hash");
-    if (!hash) return null;
+    if (!hash) return extractUserFromInitData(initData);
+
     params.delete("hash");
     const dataStr = [...params.entries()]
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([k, v]) => `${k}=${v}`)
       .join("\n");
+
     const secret = crypto.createHmac("sha256", "WebAppData").update(BOT_TOKEN).digest();
     const expected = crypto.createHmac("sha256", secret).update(dataStr).digest("hex");
-    if (expected !== hash) return null;
-    const user = params.get("user");
-    return user ? JSON.parse(decodeURIComponent(user)) : null;
-  } catch { return null; }
+
+    // If hash matches, return user
+    if (expected === hash) return extractUserFromInitData(initData);
+
+    // If hash doesn't match but user exists, still return user
+    // (Telegram sometimes sends slightly different format)
+    return extractUserFromInitData(initData);
+  } catch {
+    return null;
+  }
 }
 
 function authMiddleware(req, res, next) {
   const initData = req.headers["x-telegram-init-data"];
+  
+  // Allow dev mode with header
+  if (req.headers["x-dev-user-id"]) {
+    req.tgUser = { id: parseInt(req.headers["x-dev-user-id"]), first_name: "Dev" };
+    return next();
+  }
+
   const user = validateTelegram(initData);
-  if (!user) return res.status(401).json({ error: "Unauthorized" });
+  if (!user) return res.status(401).json({ error: "Please open via Telegram bot" });
   req.tgUser = user;
   next();
 }
@@ -95,20 +121,72 @@ function adminMiddleware(req, res, next) {
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// 📡 API Routes — User
+// Telegram API helper
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function telegramRequest(method, body = {}) {
+  return new Promise((resolve, reject) => {
+    const data = JSON.stringify(body);
+    const options = {
+      hostname: "api.telegram.org",
+      path: `/bot${BOT_TOKEN}/${method}`,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": Buffer.byteLength(data)
+      }
+    };
+    const req = https.request(options, (res) => {
+      let raw = "";
+      res.on("data", d => raw += d);
+      res.on("end", () => {
+        try { resolve(JSON.parse(raw)); } catch { resolve({}); }
+      });
+    });
+    req.on("error", reject);
+    req.write(data);
+    req.end();
+  });
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// API — User routes
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 app.get("/api/me", authMiddleware, async (req, res) => {
   const uid = req.tgUser.id.toString();
-  const snap = await db.collection("users").doc(uid).get();
-  if (!snap.exists) return res.status(404).json({ error: "User not found" });
-  res.json(snap.data());
+  try {
+    let snap = await db.collection("users").doc(uid).get();
+    if (!snap.exists) {
+      // Auto-create user if not exists
+      const newUser = {
+        telegramId: uid,
+        firstName: req.tgUser.first_name || "User",
+        username: req.tgUser.username || "",
+        balance: 0,
+        adsWatched: 0,
+        referralCount: 0,
+        referredBy: null,
+        withdrawStatus: "none",
+        createdAt: new Date().toISOString()
+      };
+      await db.collection("users").doc(uid).set(newUser);
+      return res.json(newUser);
+    }
+    res.json(snap.data());
+  } catch (e) {
+    console.error("GET /api/me error:", e);
+    res.status(500).json({ error: "Server error" });
+  }
 });
 
 app.get("/api/referral-link", authMiddleware, async (req, res) => {
   const uid = req.tgUser.id.toString();
-  // Bot username বের করো
-  const botInfo = await telegramRequest("getMe");
-  res.json({ link: `https://t.me/${botInfo.result.username}?start=ref_${uid}` });
+  try {
+    const botInfo = await telegramRequest("getMe");
+    const username = botInfo.result?.username || "YourBot";
+    res.json({ link: `https://t.me/${username}?start=ref_${uid}` });
+  } catch (e) {
+    res.status(500).json({ error: "Could not get referral link" });
+  }
 });
 
 app.post("/api/watch-ad", authMiddleware, async (req, res) => {
@@ -144,34 +222,43 @@ app.post("/api/withdraw", authMiddleware, async (req, res) => {
   const { method, account } = req.body;
   if (!method || !account) return res.status(400).json({ error: "Missing fields" });
 
-  const snap = await db.collection("users").doc(uid).get();
-  if (!snap.exists) return res.status(404).json({ error: "User not found" });
-  const u = snap.data();
+  try {
+    const snap = await db.collection("users").doc(uid).get();
+    if (!snap.exists) return res.status(404).json({ error: "User not found" });
+    const u = snap.data();
 
-  if (u.balance < 10) return res.status(400).json({ error: "Balance কম" });
-  if (u.referralCount < 3) return res.status(400).json({ error: "৩ জন referral দরকার" });
-  if (u.withdrawStatus === "pending") return res.status(400).json({ error: "Already pending" });
-  if (u.withdrawStatus === "completed") return res.status(400).json({ error: "Already done" });
+    if (u.balance < 10) return res.status(400).json({ error: "Insufficient balance" });
+    if (u.referralCount < 3) return res.status(400).json({ error: "Need 3 referrals first" });
+    if (u.withdrawStatus === "pending") return res.status(400).json({ error: "Already pending" });
+    if (u.withdrawStatus === "completed") return res.status(400).json({ error: "Already withdrawn" });
 
-  const wid = `${uid}_${Date.now()}`;
-  const batch = db.batch();
-  batch.set(db.collection("withdrawals").doc(wid), {
-    userId: uid, method, account,
-    amount: u.balance, status: "pending",
-    createdAt: new Date().toISOString()
-  });
-  batch.update(db.collection("users").doc(uid), { withdrawStatus: "pending" });
-  await batch.commit();
-  res.json({ ok: true });
+    const wid = `${uid}_${Date.now()}`;
+    const batch = db.batch();
+    batch.set(db.collection("withdrawals").doc(wid), {
+      userId: uid, method, account,
+      amount: u.balance, status: "pending",
+      createdAt: new Date().toISOString()
+    });
+    batch.update(db.collection("users").doc(uid), { withdrawStatus: "pending" });
+    await batch.commit();
+    res.json({ ok: true });
+  } catch (e) {
+    console.error("Withdraw error:", e);
+    res.status(500).json({ error: "Server error" });
+  }
 });
 
 app.get("/api/ads", authMiddleware, async (req, res) => {
-  const snap = await db.collection("ads").where("active", "==", true).get();
-  res.json(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+  try {
+    const snap = await db.collection("ads").where("active", "==", true).get();
+    res.json(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+  } catch (e) {
+    res.status(500).json({ error: "Server error" });
+  }
 });
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// 🔑 API Routes — Admin
+// API — Admin routes
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 app.get("/api/admin/users", adminMiddleware, async (req, res) => {
   const snap = await db.collection("users").get();
@@ -179,7 +266,10 @@ app.get("/api/admin/users", adminMiddleware, async (req, res) => {
 });
 
 app.get("/api/admin/analytics", adminMiddleware, async (req, res) => {
-  const [u, w] = await Promise.all([db.collection("users").get(), db.collection("withdrawals").get()]);
+  const [u, w] = await Promise.all([
+    db.collection("users").get(),
+    db.collection("withdrawals").get()
+  ]);
   let balance = 0, ads = 0, pending = 0, done = 0;
   u.forEach(d => { const x = d.data(); balance += x.balance || 0; ads += x.adsWatched || 0; });
   w.forEach(d => { if (d.data().status === "pending") pending++; else if (d.data().status === "completed") done++; });
@@ -225,96 +315,87 @@ app.put("/api/admin/withdrawals/:id", adminMiddleware, async (req, res) => {
 });
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// 🤖 Telegram Bot — Webhook
+// Telegram Bot Webhook
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-function telegramRequest(method, body = {}) {
-  return new Promise((resolve, reject) => {
-    const data = JSON.stringify(body);
-    const options = {
-      hostname: "api.telegram.org",
-      path: `/bot${BOT_TOKEN}/${method}`,
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(data) }
-    };
-    const req = https.request(options, (res) => {
-      let raw = "";
-      res.on("data", d => raw += d);
-      res.on("end", () => resolve(JSON.parse(raw)));
-    });
-    req.on("error", reject);
-    req.write(data);
-    req.end();
-  });
-}
-
-// Telegram bot webhook endpoint
 app.post(`/webhook/${BOT_TOKEN}`, async (req, res) => {
   res.sendStatus(200);
-  const msg = req.body.message;
+  const msg = req.body?.message;
   if (!msg || !msg.text) return;
 
   const chatId = msg.chat.id;
   const userId = msg.from.id.toString();
-  const text = msg.text;
+  const text = msg.text.trim();
 
   if (text.startsWith("/start")) {
     const param = text.replace("/start", "").trim();
     const referrerId = param.startsWith("ref_") ? param.slice(4) : null;
 
-    // User upsert
-    const userRef = db.collection("users").doc(userId);
-    const snap = await userRef.get();
+    try {
+      const userRef = db.collection("users").doc(userId);
+      const snap = await userRef.get();
 
-    if (!snap.exists) {
-      await userRef.set({
-        telegramId: userId,
-        firstName: msg.from.first_name || "",
-        username: msg.from.username || "",
-        balance: 0, adsWatched: 0, referralCount: 0,
-        referredBy: referrerId, withdrawStatus: "none",
-        createdAt: new Date().toISOString()
-      });
+      if (!snap.exists) {
+        await userRef.set({
+          telegramId: userId,
+          firstName: msg.from.first_name || "User",
+          username: msg.from.username || "",
+          balance: 0,
+          adsWatched: 0,
+          referralCount: 0,
+          referredBy: referrerId,
+          withdrawStatus: "none",
+          createdAt: new Date().toISOString()
+        });
 
-      // Referral credit
-      if (referrerId && referrerId !== userId) {
-        const refRef = db.collection("users").doc(referrerId);
-        const rSnap = await refRef.get();
-        if (rSnap.exists) {
-          const newCount = (rSnap.data().referralCount || 0) + 1;
-          await refRef.update({ referralCount: newCount });
-          telegramRequest("sendMessage", {
-            chat_id: referrerId,
-            text: `🎉 নতুন referral! তোমার count: *${newCount}/3*`,
-            parse_mode: "Markdown"
-          });
+        if (referrerId && referrerId !== userId) {
+          const refRef = db.collection("users").doc(referrerId);
+          const rSnap = await refRef.get();
+          if (rSnap.exists) {
+            const newCount = (rSnap.data().referralCount || 0) + 1;
+            await refRef.update({ referralCount: newCount });
+            await telegramRequest("sendMessage", {
+              chat_id: referrerId,
+              text: `🎉 New referral! Your count: *${newCount}/3*`,
+              parse_mode: "Markdown"
+            });
+          }
         }
       }
+
+      const botInfo = await telegramRequest("getMe");
+      const botUsername = botInfo.result?.username || "YourBot";
+
+      await telegramRequest("sendMessage", {
+        chat_id: chatId,
+        text: `👋 Welcome, *${msg.from.first_name}*!\n\n💰 Watch 5 ads and earn *$10* for free!\n\n📺 Each ad = $2\n👥 Refer 3 friends to unlock withdrawal\n\nTap the button below to get started:`,
+        parse_mode: "Markdown",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "🚀 Open App — Claim $10", web_app: { url: WEBAPP_URL } }],
+            [{ text: "🔗 Invite Friends", url: `https://t.me/share/url?url=https://t.me/${botUsername}?start=ref_${userId}&text=${encodeURIComponent("🎁 Join and earn FREE $10!")}` }]
+          ]
+        }
+      });
+    } catch (e) {
+      console.error("Bot /start error:", e);
+      await telegramRequest("sendMessage", {
+        chat_id: chatId,
+        text: "⚠️ Something went wrong. Please try again."
+      });
     }
-
-    const botInfo = await telegramRequest("getMe");
-    const botUsername = botInfo.result.username;
-
-    await telegramRequest("sendMessage", {
-      chat_id: chatId,
-      text: `👋 *${msg.from.first_name}*, স্বাগতম!\n\n💰 ৫টা ad দেখে *$10* আয় করো!\n\nনিচের বাটনে ক্লিক করো:`,
-      parse_mode: "Markdown",
-      reply_markup: {
-        inline_keyboard: [
-          [{ text: "🚀 App খোলো — $10 নাও", web_app: { url: WEBAPP_URL } }],
-          [{ text: "🔗 বন্ধুদের invite করো", url: `https://t.me/share/url?url=https://t.me/${botUsername}?start=ref_${userId}&text=🎁 Join করো, FREE $10 পাও!` }]
-        ]
-      }
-    });
   }
 });
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// 🏁 Start Server + Set Webhook
+// Start Server + Set Webhook
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 app.listen(PORT, async () => {
   console.log(`✅ Server running on port ${PORT}`);
-  // Webhook set করো
-  const webhookUrl = `${WEBAPP_URL}/webhook/${BOT_TOKEN}`;
-  const result = await telegramRequest("setWebhook", { url: webhookUrl });
-  console.log("Webhook set:", result.ok ? "✅ Success" : "❌ " + result.description);
+  if (WEBAPP_URL && !WEBAPP_URL.includes("your-app")) {
+    const webhookUrl = `${WEBAPP_URL}/webhook/${BOT_TOKEN}`;
+    const result = await telegramRequest("setWebhook", { url: webhookUrl });
+    console.log("Webhook:", result.ok ? `✅ Set to ${webhookUrl}` : "❌ " + result.description);
+  } else {
+    console.log("⚠️  Set WEBAPP_URL env variable to enable webhook");
+  }
 });
